@@ -3,12 +3,13 @@ package com.example.news_app.ui.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.news_app.R
 import com.example.news_app.adapters.NewsAdapter
-import com.example.news_app.databinding.FragmentBreakingNewsBinding
 import com.example.news_app.ui.NewsActivity
 import com.example.news_app.ui.NewsViewModel
 import com.example.news_app.util.Resource
@@ -17,15 +18,14 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
 
     private lateinit var viewModel: NewsViewModel
     lateinit var newsAdapter: NewsAdapter
-    private lateinit var binding: FragmentBreakingNewsBinding
+    lateinit var viewCurrent: View
 
     val TAG = "BreakingNewsFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = (activity as NewsActivity).viewModel
-
-        binding = FragmentBreakingNewsBinding.inflate(layoutInflater)
+        viewCurrent = view
 
         setupRecyclerView()
 
@@ -51,16 +51,18 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
     }
 
     private fun hideProgressBar() {
-        binding.paginationProgressBar.visibility = View.INVISIBLE
+        viewCurrent.findViewById<ProgressBar>(R.id.paginationProgressBar)
+            .visibility = View.INVISIBLE
     }
 
     private fun showProgressBar() {
-        binding.paginationProgressBar.visibility = View.VISIBLE
+        viewCurrent.findViewById<ProgressBar>(R.id.paginationProgressBar)
+            .visibility = View.VISIBLE
     }
 
     private fun setupRecyclerView() {
         newsAdapter = NewsAdapter()
-        binding.rvBreakingNews.apply {
+        viewCurrent.findViewById<RecyclerView>(R.id.rvBreakingNews).apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
         }
