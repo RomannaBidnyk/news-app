@@ -9,6 +9,8 @@ import androidx.navigation.fragment.navArgs
 import com.example.news_app.R
 import com.example.news_app.ui.NewsActivity
 import com.example.news_app.ui.NewsViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
 
 class ArticleFragment : Fragment(R.layout.fragment_article) {
@@ -24,6 +26,11 @@ class ArticleFragment : Fragment(R.layout.fragment_article) {
         view.findViewById<WebView>(R.id.webView).apply {
             webViewClient = WebViewClient()
             loadUrl(article.url)
+        }
+
+        view.findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
+            viewModel.saveArticle(article)
+            Snackbar.make(view, "Article saved successfully", Snackbar.LENGTH_SHORT).show()
         }
     }
 }
