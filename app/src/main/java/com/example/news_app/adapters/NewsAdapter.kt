@@ -61,9 +61,6 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
         onItemClickListener = listener;
     }
 
-    //todo change to binding?
-    //    private lateinit var binding: ItemArticlePreviewBinding
-
     inner class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTitle = itemView.findViewById<TextView>(R.id.tvTitle)
         val tvSource = itemView.findViewById<TextView>(R.id.tvSource)

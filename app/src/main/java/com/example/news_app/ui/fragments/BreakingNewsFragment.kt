@@ -1,9 +1,9 @@
 package com.example.news_app.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -87,12 +87,12 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
     }
 
     private fun hideErrorMessage() {
-        viewCurrent.findViewById<TextView>(R.id.itemErrorMessage).visibility = View.INVISIBLE
+        viewCurrent.findViewById<CardView>(R.id.itemErrorMessage).visibility = View.INVISIBLE
         isError = false
     }
 
     private fun showErrorMessage(message: String) {
-        viewCurrent.findViewById<TextView>(R.id.itemErrorMessage).visibility = View.VISIBLE
+        viewCurrent.findViewById<CardView>(R.id.itemErrorMessage).visibility = View.VISIBLE
         viewCurrent.findViewById<TextView>(R.id.tvErrorMessage).text = message
         isError = true
     }
@@ -116,8 +116,9 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
             val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
             val isNotAtBeginning = firstVisibleItemPosition >= 0
             val isTotalMoreThanVisible = totalItemCount >= QUERY_PAGE_SIZE
-            val shouldPaginate = isNoErrors && isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
-                    isTotalMoreThanVisible && isScrolling
+            val shouldPaginate =
+                isNoErrors && isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
+                        isTotalMoreThanVisible && isScrolling
             if (shouldPaginate) {
                 viewModel.getBreakingNews("us")
                 isScrolling = false

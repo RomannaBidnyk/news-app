@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.view.View
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -112,12 +113,12 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
     }
 
     private fun hideErrorMessage() {
-        viewCurrent.findViewById<TextView>(R.id.itemErrorMessage).visibility = View.INVISIBLE
+        viewCurrent.findViewById<CardView>(R.id.itemErrorMessage).visibility = View.INVISIBLE
         isError = false
     }
 
     private fun showErrorMessage(message: String) {
-        viewCurrent.findViewById<TextView>(R.id.itemErrorMessage).visibility = View.VISIBLE
+        viewCurrent.findViewById<CardView>(R.id.itemErrorMessage).visibility = View.VISIBLE
         viewCurrent.findViewById<TextView>(R.id.tvErrorMessage).text = message
         isError = true
     }
