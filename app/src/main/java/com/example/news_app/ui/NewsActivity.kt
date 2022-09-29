@@ -10,7 +10,7 @@ import com.example.news_app.databinding.ActivityNewsBinding
 import com.example.news_app.db.ArticleDatabase
 import com.example.news_app.repository.NewsRepository
 
-class NewsActivity : AppCompatActivity() {
+class  NewsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNewsBinding
     lateinit var viewModel: NewsViewModel
@@ -19,7 +19,7 @@ class NewsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val newsRepository = NewsRepository(ArticleDatabase(this))
-        val viewModelProviderFactory = NewsViewModelProviderFactory(newsRepository)
+        val viewModelProviderFactory = NewsViewModelProviderFactory(application, newsRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory).get(NewsViewModel::class.java)
 
         binding = ActivityNewsBinding.inflate(layoutInflater)

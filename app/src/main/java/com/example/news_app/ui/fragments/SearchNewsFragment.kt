@@ -2,11 +2,8 @@ package com.example.news_app.ui.fragments
 
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import android.view.View
-import android.widget.AbsListView
-import android.widget.EditText
-import android.widget.ProgressBar
+import android.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -31,7 +28,6 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
     lateinit var newsAdapter: NewsAdapter
     lateinit var viewCurrent: View
 
-    val TAG = "SearchNewsFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,6 +63,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()
+                    hideErrorMessage()
                     response.data?.let { newsResponse ->
                         newsAdapter.differ.submitList(newsResponse.articles.toList())
                         val totalPages = newsResponse.totalResults / QUERY_PAGE_SIZE + 2
@@ -80,7 +77,9 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let { message ->
-                        Log.e(TAG, "An error occurred: $message")
+                        Toast.makeText(activity, "An error occurred: $message", Toast.LENGTH_LONG)
+                            .show()
+                        showErrorMessage(message)
                     }
                 }
                 is Resource.Loading -> {
@@ -88,6 +87,16 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                 }
             }
         })
+
+        viewCurrent.findViewById<Button>(R.id.btnRetry).setOnClickListener {
+            if (viewCurrent.findViewById<EditText>(R.id.editTextSearch).text.toString()
+                    .isNotEmpty()
+            ) {
+                viewModel.searchNews(viewCurrent.findViewById<EditText>(R.id.editTextSearch).text.toString())
+            } else {
+                hideErrorMessage()
+            }
+        }
     }
 
     private fun hideProgressBar() {
@@ -102,6 +111,18 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
         isLoading = true
     }
 
+    private fun hideErrorMessage() {
+        viewCurrent.findViewById<TextView>(R.id.itemErrorMessage).visibility = View.INVISIBLE
+        isError = false
+    }
+
+    private fun showErrorMessage(message: String) {
+        viewCurrent.findViewById<TextView>(R.id.itemErrorMessage).visibility = View.VISIBLE
+        viewCurrent.findViewById<TextView>(R.id.tvErrorMessage).text = message
+        isError = true
+    }
+
+    var isError = false
     var isLoading = false
     var isLastPage = false
     var isScrolling = false
@@ -115,12 +136,14 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
             val visibleItemCount = layoutManager.childCount
             val totalItemCount = layoutManager.itemCount
 
+            val isNoErrors = !isError
             val isNotLoadingAndNotLastPage = !isLoading && !isLastPage
             val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
             val isNotAtBeginning = firstVisibleItemPosition >= 0
             val isTotalMoreThanVisible = totalItemCount >= QUERY_PAGE_SIZE
-            val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
-                    isTotalMoreThanVisible && isScrolling
+            val shouldPaginate =
+                isNoErrors && isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
+                        isTotalMoreThanVisible && isScrolling
             if (shouldPaginate) {
                 viewModel.searchNews(viewCurrent.findViewById<EditText>(R.id.editTextSearch).text.toString())
                 isScrolling = false
